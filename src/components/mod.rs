@@ -35,6 +35,12 @@ pub mod curved_label;
 pub mod bottom_sheet;
 pub mod button_group;
 pub mod staggered_grid;
+// WeChat-style widgets
+pub mod clickable_view;
+pub mod popup_menu;
+pub mod dropdown;
+pub mod chat_bubble;
+pub mod filler;
 
 use makepad_widgets::*;
 
@@ -76,4 +82,10 @@ pub fn live_design(cx: &mut Cx) {
     self::bottom_sheet::live_design(cx);
     self::button_group::live_design(cx);
     self::staggered_grid::live_design(cx);
+    // WeChat-style widgets
+    self::clickable_view::live_design(cx);
+    self::popup_menu::live_design(cx);
+    self::dropdown::live_design(cx);
+    self::chat_bubble::live_design(cx);
+    self::filler::live_design(cx);
 }
