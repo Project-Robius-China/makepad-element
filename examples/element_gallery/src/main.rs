@@ -43,6 +43,8 @@ live_design! {
     use makepad_element::components::fade_view::*;
     use makepad_element::components::blur_view::*;
     use makepad_element::components::fading_bar::*;
+    use makepad_element::components::bottom_sheet::*;
+    use makepad_element::components::button_group::*;
     use makepad_element::components::staggered_grid::*;
     use makepad_element::theme::font::*;
 
@@ -733,6 +735,26 @@ live_design! {
                                     <ElementButtonSolid> { text: "VIEW NOW", draw_bg: { border_radius: 20.0 } }
                                 }
                             }
+
+                            <SectionTitle> { text: "Composable Card (sub-components)" }
+                            <ElementCard> {
+                                <ElementCardImage> {
+                                    image = {
+                                        source: dep("crate://self/resources/images/wallpaper_2.jpg")
+                                    }
+                                }
+                                <ElementCardTitle> { label = { text: "Composable Card" } }
+                                <ElementCardDivider> {}
+                                <View> {
+                                    width: Fill, height: Fit, flow: Down, spacing: 8, padding: {left: 15, right: 15, bottom: 15},
+                                    <Label> {
+                                        width: Fill,
+                                        draw_text: { color: #8693a0, text_style: { font_size: 14.0 }, wrap: Word }
+                                        text: "This card is built using composable sub-components: CardImage, CardTitle, and CardDivider."
+                                    }
+                                    <ElementButtonSolid> { text: "LEARN MORE" }
+                                }
+                            }
                         }
 
                         // ══════════════════════════════════════
@@ -1150,7 +1172,106 @@ live_design! {
                         }
 
                         // ══════════════════════════════════════
-                        //  SCREEN 28: BOTTOM SHEET
+                        //  SCREEN 28: BUTTON GROUP
+                        // ══════════════════════════════════════
+                        page_button_group = <ScrollYView> {
+                            visible: false,
+                            width: Fill, height: Fill, flow: Down,
+                            padding: 16, spacing: 16,
+
+                            <ScreenTitle> { text: "Button Group" }
+
+                            <SectionTitle> { text: "Horizontal" }
+                            <ElementButtonGroup> {
+                                <ElementButtonGroupItem> { text: "Tab 1" }
+                                <ElementButtonGroupItem> { text: "Tab 2" }
+                                <ElementButtonGroupItem> { text: "Tab 3" }
+                            }
+
+                            <SectionTitle> { text: "Secondary Color" }
+                            <ElementButtonGroup> {
+                                <ElementButtonGroupItemSecondary> { text: "One" }
+                                <ElementButtonGroupItemSecondary> { text: "Two" }
+                                <ElementButtonGroupItemSecondary> { text: "Three" }
+                                <ElementButtonGroupItemSecondary> { text: "Four" }
+                            }
+
+                            <SectionTitle> { text: "Vertical" }
+                            <ElementButtonGroupVertical> {
+                                <ElementButtonGroupItem> { text: "Option A" }
+                                <ElementButtonGroupItem> { text: "Option B" }
+                                <ElementButtonGroupItem> { text: "Option C" }
+                            }
+                        }
+
+                        // ══════════════════════════════════════
+                        //  SCREEN 29: ACCORDION (LIST ITEM)
+                        // ══════════════════════════════════════
+                        page_accordion = <ScrollYView> {
+                            visible: false,
+                            width: Fill, height: Fill, flow: Down,
+                            padding: 0, spacing: 0,
+
+                            <View> {
+                                width: Fill, height: Fit,
+                                padding: {left: 16, top: 16, bottom: 8},
+                                <ScreenTitle> { text: "Accordion" }
+                            }
+
+                            <ElementListItemAccordion> {
+                                header = {
+                                    content = {
+                                        title = { text: "Getting Started" }
+                                        subtitle = { text: "Setup and installation" }
+                                    }
+                                }
+                                body = {
+                                    <Label> {
+                                        width: Fill,
+                                        draw_text: { color: #424242, text_style: { font_size: 14.0 }, wrap: Word }
+                                        text: "Install the library using your favorite package manager. Follow the quick start guide to set up your first project."
+                                    }
+                                }
+                            }
+                            <ElementDivider> {}
+
+                            <ElementListItemAccordion> {
+                                header = {
+                                    content = {
+                                        title = { text: "Components" }
+                                        subtitle = { text: "Available UI components" }
+                                    }
+                                }
+                                body = {
+                                    <Label> {
+                                        width: Fill,
+                                        draw_text: { color: #424242, text_style: { font_size: 14.0 }, wrap: Word }
+                                        text: "Buttons, Cards, Inputs, Lists, Dialogs, Tabs, Avatars, Badges, Chips, FABs, Progress indicators, and many more."
+                                    }
+                                }
+                            }
+                            <ElementDivider> {}
+
+                            <ElementListItemAccordion> {
+                                header = {
+                                    content = {
+                                        title = { text: "Customization" }
+                                        subtitle = { text: "Theming and styling" }
+                                    }
+                                }
+                                body = {
+                                    <Label> {
+                                        width: Fill,
+                                        draw_text: { color: #424242, text_style: { font_size: 14.0 }, wrap: Word }
+                                        text: "Every component can be customized via DSL properties. Colors, sizes, spacing, and borders are all adjustable."
+                                    }
+                                }
+                            }
+                            <ElementDivider> {}
+                        }
+
+                        // ══════════════════════════════════════
+                        //  SCREEN 30: BOTTOM SHEET
                         // ══════════════════════════════════════
                         page_bottom_sheet = <ScrollYView> {
                             visible: false,
@@ -1409,7 +1530,7 @@ live_design! {
                             <ScreenTitle> { text: "Markdown" }
 
                             <ElementMarkdown> {
-                                body: "# Heading 1\n\n## Heading 2\n\n### Heading 3\n\nThis is **bold text** and *italic text* and ***bold italic***.\n\n- Item one\n- Item two\n- Item three\n\n> A blockquote with some wisdom.\n\nInline `code` and a code block:\n\n```\nfn main() {\n    println!(\"Hello Element Gallery!\");\n}\n```\n\n---\n\nA [link](https://makepad.dev) to Makepad."
+                                body: "# Makepad Element Gallery\n\n## Typography\n\nThis is **bold text**, *italic text*, and ***bold italic***. You can also use ~~strikethrough~~ for deleted content.\n\n## Lists\n\n### Unordered\n\n- Makepad is a cross-platform UI framework\n- Written entirely in Rust\n- GPU-accelerated rendering with custom shaders\n- Live design reloading\n\n### Ordered\n\n1. Clone the repository\n2. Run `cargo run --example element_gallery`\n3. Explore the components\n\n## Blockquote\n\n> The best way to predict the future is to invent it.\n> — Alan Kay\n\n## Code\n\nInline code: use `Vec<T>` for dynamic arrays and `HashMap<K, V>` for key-value storage.\n\n### Rust — Async HTTP Server\n\n```rust\nuse axum::{Router, routing::get, Json};\nuse serde::Serialize;\n\n#[derive(Serialize)]\nstruct Health { status: String }\n\nasync fn health() -> Json<Health> {\n    Json(Health { status: \"ok\".into() })\n}\n\n#[tokio::main]\nasync fn main() {\n    let app = Router::new().route(\"/health\", get(health));\n    let listener = tokio::net::TcpListener::bind(\"0.0.0.0:3000\")\n        .await.unwrap();\n    axum::serve(listener, app).await.unwrap();\n}\n```\n\n### Makepad Shader — Gradient Circle\n\n```glsl\nfn pixel(self) -> vec4 {\n    let sdf = Sdf2d::viewport(self.pos * self.rect_size);\n    let c = self.rect_size * 0.5;\n    let r = min(c.x, c.y);\n    let gradient = mix(#ff6b6b, #4ecdc4, self.pos.y);\n    sdf.circle(c.x, c.y, r);\n    sdf.fill(gradient);\n    return sdf.result;\n}\n```\n\n## Mathematics\n\n**Quadratic formula:** $x = \\\\frac{-b \\\\pm \\\\sqrt{b^2 - 4ac}}{2a}$\n\n**Euler's identity:** $e^{i\\\\pi} + 1 = 0$\n\n**Gaussian integral:**\n\n$$\\\\int_{-\\\\infty}^{\\\\infty} e^{-x^2} dx = \\\\sqrt{\\\\pi}$$\n\n**Bayes' theorem:** $P(A|B) = \\\\frac{P(B|A) \\\\cdot P(A)}{P(B)}$\n\n**Summation:**\n\n$$\\\\sum_{i=1}^{n} i = \\\\frac{n(n+1)}{2}$$\n\n## Horizontal Rule\n\n---\n\n## Links\n\nLearn more at [Makepad](https://makepad.dev) | Source on [GitHub](https://github.com/makepad/makepad)"
                             }
                         }
 
@@ -1477,6 +1598,8 @@ live_design! {
                         menu_settings = <DrawerItem> { text: "Settings" }
                         menu_theme = <DrawerItem> { text: "Theme" }
                         menu_fonts = <DrawerItem> { text: "Fonts" }
+                        menu_button_group = <DrawerItem> { text: "Button Group" }
+                        menu_accordion = <DrawerItem> { text: "Accordion" }
                         menu_bottom_sheet = <DrawerItem> { text: "Bottom Sheet" }
                         menu_login = <DrawerItem> { text: "Login" }
                         menu_whatsapp = <DrawerItem> { text: "WhatsApp" }
@@ -1494,45 +1617,71 @@ live_design! {
                     }
                 }
 
-                // ── Bottom sheet overlay ──────────────────────
-                bottom_sheet_overlay = <View> {
+                // ── Bottom sheet overlay (using ElementBottomSheetActions) ──
+                bottom_sheet_overlay = <ElementBottomSheetActions> {
                     visible: false,
-                    width: Fill, height: Fill,
-                    flow: Down,
-                    align: {y: 1.0},
 
-                    // Backdrop
                     bs_backdrop = <View> {
                         width: Fill, height: Fill,
-                        show_bg: true, draw_bg: { color: #00000066 },
                         cursor: Hand,
                     }
 
-                    // Sheet content
-                    <View> {
-                        width: Fill, height: Fit,
-                        flow: Down,
-                        show_bg: true, draw_bg: { color: #ffffff }
+                    sheet = {
+                        title = {
+                            <Label> {
+                                width: Fill, height: Fit,
+                                draw_text: { color: #333333, text_style: <THEME_FONT_REGULAR> { font_size: 16.0 } }
+                                text: "Choose an action"
+                            }
+                        }
+                        actions = {
+                            <ElementListItem> { content = { title = { text: "List Item 1" } subtitle = { text: "" } } chevron = { visible: false } }
+                            <ElementDivider> {}
+                            <ElementListItem> { content = { title = { text: "List Item 2" } subtitle = { text: "" } } chevron = { visible: false } }
+                            <ElementDivider> {}
+                            <View> {
+                                width: Fill, height: 48,
+                                align: {x: 0.5, y: 0.5},
+                                show_bg: true, draw_bg: { color: #e53935 },
+                                cursor: Hand,
+                                bs_cancel_btn = <Label> { draw_text: { color: #fff, text_style: <THEME_FONT_REGULAR> { font_size: 16.0 } } text: "Cancel" }
+                            }
+                        }
+                    }
+                }
 
-                        <ElementListItem> {
-                            <View> {
-                                width: Fill, height: 48, align: {y: 0.5}, padding: {left: 20},
-                                <Label> { draw_text: { color: #333, text_style: { font_size: 16.0 } } text: "List Item 1" }
+                // ── Dialog overlays ──────────────────────────
+                dialog_simple_overlay = <ElementOverlay> {
+                    visible: false,
+                    backdrop = { cursor: Hand, }
+                    content = {
+                        <ElementDialog> {
+                            title = { text: "Simple Dialog" }
+                            body = { text: "This is a simple informational dialog. It displays a message to the user." }
+                            actions = {
+                                dialog_simple_close = <ElementButtonClear> { text: "OK" }
                             }
                         }
-                        <ElementDivider> {}
-                        <ElementListItem> {
-                            <View> {
-                                width: Fill, height: 48, align: {y: 0.5}, padding: {left: 20},
-                                <Label> { draw_text: { color: #333, text_style: { font_size: 16.0 } } text: "List Item 2" }
-                            }
+                    }
+                }
+
+                dialog_multi_overlay = <ElementOverlay> {
+                    visible: false,
+                    backdrop = { cursor: Hand, }
+                    content = {
+                        <ElementDialogConfirm> {
+                            title = { text: "Confirm Action" }
+                            body = { text: "Are you sure you want to proceed? This action cannot be undone." }
                         }
-                        <ElementDivider> {}
-                        <View> {
-                            width: Fill, height: 48, align: {x: 0.5, y: 0.5},
-                            show_bg: true, draw_bg: { color: #e53935 },
-                            cursor: Hand,
-                            bs_cancel_btn = <Label> { draw_text: { color: #fff, text_style: <THEME_FONT_REGULAR> { font_size: 16.0 } } text: "Cancel" }
+                    }
+                }
+
+                dialog_loading_overlay = <ElementOverlay> {
+                    visible: false,
+                    backdrop = { cursor: Hand, }
+                    content = {
+                        <ElementDialogLoading> {
+                            title = { text: "Please wait..." }
                         }
                     }
                 }
@@ -1606,6 +1755,8 @@ fn pages() -> Vec<(LiveId, LiveId, &'static str)> {
         (live_id!(menu_settings), live_id!(page_settings), "Settings"),
         (live_id!(menu_theme), live_id!(page_theme), "Theme"),
         (live_id!(menu_fonts), live_id!(page_fonts), "Fonts"),
+        (live_id!(menu_button_group), live_id!(page_button_group), "Button Group"),
+        (live_id!(menu_accordion), live_id!(page_accordion), "Accordion"),
         (live_id!(menu_bottom_sheet), live_id!(page_bottom_sheet), "Bottom Sheet"),
         (live_id!(menu_login), live_id!(page_login), "Login"),
         (live_id!(menu_whatsapp), live_id!(page_whatsapp), "WhatsApp"),
@@ -1642,6 +1793,28 @@ impl MatchEvent for App {
         // Bottom sheet backdrop / cancel
         if self.ui.view(ids!(bs_backdrop)).finger_up(actions).is_some() {
             self.ui.view(ids!(bottom_sheet_overlay)).set_visible(cx, false);
+        }
+
+        // Dialog triggers
+        if self.ui.button(ids!(dialog_simple_btn)).clicked(actions) {
+            self.ui.view(ids!(dialog_simple_overlay)).set_visible(cx, true);
+        }
+        if self.ui.button(ids!(dialog_multi_btn)).clicked(actions) {
+            self.ui.view(ids!(dialog_multi_overlay)).set_visible(cx, true);
+        }
+        if self.ui.button(ids!(dialog_loading_btn)).clicked(actions) {
+            self.ui.view(ids!(dialog_loading_overlay)).set_visible(cx, true);
+        }
+
+        // Dialog close handlers (close button click)
+        if self.ui.button(ids!(dialog_simple_close)).clicked(actions) {
+            self.ui.view(ids!(dialog_simple_overlay)).set_visible(cx, false);
+        }
+        // Dialog backdrop clicks
+        for overlay_id in [live_id!(dialog_simple_overlay), live_id!(dialog_multi_overlay), live_id!(dialog_loading_overlay)] {
+            if self.ui.view(&[overlay_id]).finger_up(actions).is_some() {
+                self.ui.view(&[overlay_id]).set_visible(cx, false);
+            }
         }
 
         // Theme color swatches

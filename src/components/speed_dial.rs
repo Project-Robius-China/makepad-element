@@ -5,29 +5,13 @@ live_design! {
     use link::shaders::*;
     use link::widgets::*;
 
+    use crate::theme::live_theme::*;
+
     // Speed dial action item (small FAB)
-    pub ElementSpeedDialAction = <Button> {
+    pub ElementSpeedDialAction = <ElementCircleButtonBase> {
         width: 40, height: 40,
-        padding: 0,
-        align: {x: 0.5, y: 0.5},
-
-        draw_bg: {
-            instance color: #8693a0,
-            instance color_hover: #5e6977,
-
-            fn pixel(self) -> vec4 {
-                let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                let c = self.rect_size * 0.5;
-                let color = mix(self.color, self.color_hover, self.hover);
-                sdf.circle(c.x, c.y, c.x);
-                sdf.fill(color);
-                return sdf.result;
-            }
-        }
-        draw_text: {
-            color: #ffffff,
-            text_style: { font_size: 14.0 }
-        }
+        draw_bg: { color: #8693a0, color_hover: #5e6977 }
+        draw_text: { text_style: { font_size: 14.0 } }
     }
 
     // Speed dial container (vertical stack of actions + main FAB)
@@ -46,29 +30,11 @@ live_design! {
         }
 
         // RNE: margin 16, marginTop 0
-        main_button = <Button> {
+        main_button = <ElementCircleButtonBase> {
             width: 56, height: 56,
-            padding: 0,
             margin: {left: 16, right: 16, bottom: 16},
-            align: {x: 0.5, y: 0.5},
-
-            draw_bg: {
-                instance color: #2089dc,
-                instance color_hover: #1975be,
-
-                fn pixel(self) -> vec4 {
-                    let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                    let c = self.rect_size * 0.5;
-                    let color = mix(self.color, self.color_hover, self.hover);
-                    sdf.circle(c.x, c.y, c.x);
-                    sdf.fill(color);
-                    return sdf.result;
-                }
-            }
-            draw_text: {
-                color: #ffffff,
-                text_style: { font_size: 24.0 }
-            }
+            draw_bg: { color: #2089dc, color_hover: #1975be }
+            draw_text: { text_style: { font_size: 24.0 } }
             text: "+"
         }
     }

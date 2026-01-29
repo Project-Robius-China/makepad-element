@@ -7,7 +7,9 @@ description = "React Native Elements component library for Makepad"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-makepad-widgets = { git = "https://github.com/makepad/makepad", branch = "dev" }
+makepad-widgets = { path = "../robius/makepad/widgets" }
+makepad-code-editor = { path = "../robius/makepad/code_editor" }
+math_widget = { path = "../robius/makepad/libs/math_widget" }
 resvg = "0.43.0"
 
 [dev-dependencies]

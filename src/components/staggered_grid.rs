@@ -1,5 +1,5 @@
 use makepad_widgets::{scroll_bar::ScrollBarAction, *};
-use std::collections::{HashMap, VecDeque};
+use std::collections::VecDeque;
 
 live_design! {
     use link::theme::*;
@@ -94,7 +94,7 @@ pub struct ElementStaggeredGrid {
     #[rust]
     last_drawn_item_index: usize,
     #[rust]
-    item_columns: HashMap<usize, usize>,
+    item_columns: Vec<Option<usize>>,
 
     #[rust]
     most_recent_viewport: Rect,
@@ -397,7 +397,10 @@ impl ElementStaggeredGrid {
                     );
 
                     self.last_drawn_column = current_column;
-                    self.item_columns.insert(valid_next_index, current_column);
+                    if valid_next_index >= self.item_columns.len() {
+                        self.item_columns.resize(valid_next_index + 1, None);
+                    }
+                    self.item_columns[valid_next_index] = Some(current_column);
                     self.last_drawn_item_index = index;
                     self.columns[current_column].has_drawn_first_item = true;
 
@@ -695,8 +698,8 @@ impl ElementStaggeredGrid {
     }
 
     fn find_column_for_item(&mut self, index: usize) -> usize {
-        match self.item_columns.get(&index) {
-            Some(column) => *column,
+        match self.item_columns.get(index).and_then(|v| *v) {
+            Some(column) => column,
             None => {
                 if let Some(col) = self.find_next_available_column() {
                     col

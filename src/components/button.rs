@@ -5,33 +5,14 @@ live_design! {
     use link::shaders::*;
     use link::widgets::*;
 
+    use crate::theme::live_theme::*;
+
     // Solid button (primary)
-    pub ElementButtonSolid = <Button> {
-        width: Fit,
-        height: Fit,
-        padding: {left: 16, right: 16, top: 8, bottom: 8},
-
+    pub ElementButtonSolid = <ElementButtonBase> {
         draw_bg: {
-            instance color: #2089dc,
-            instance color_hover: #1975be,
-            instance color_down: #1461a0,
-            instance border_radius: 3.0,
-
-            fn pixel(self) -> vec4 {
-                let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                let color = mix(
-                    mix(self.color, self.color_hover, self.hover),
-                    self.color_down,
-                    self.down
-                );
-                sdf.box(0., 0., self.rect_size.x, self.rect_size.y, self.border_radius);
-                sdf.fill(color);
-                return sdf.result;
-            }
-        }
-        draw_text: {
-            color: #ffffff,
-            text_style: { font_size: 16.0 }
+            color: #2089dc,
+            color_hover: #1975be,
+            color_down: #1461a0,
         }
     }
 
@@ -50,7 +31,6 @@ live_design! {
             fn pixel(self) -> vec4 {
                 let sdf = Sdf2d::viewport(self.pos * self.rect_size);
                 let bg = mix(self.color, self.color_hover, self.hover);
-                // Inset box by half stroke width so the border renders fully inside bounds
                 let bw = 1.0;
                 let hw = bw * 0.5;
                 sdf.box(hw, hw, self.rect_size.x - bw, self.rect_size.y - bw, self.border_radius);
@@ -91,125 +71,47 @@ live_design! {
     }
 
     // Error/danger button
-    pub ElementButtonError = <Button> {
-        width: Fit,
-        height: Fit,
-        padding: {left: 16, right: 16, top: 8, bottom: 8},
-
+    pub ElementButtonError = <ElementButtonBase> {
         draw_bg: {
-            instance color: #ff190c,
-            instance color_hover: #d9150a,
-            instance border_radius: 3.0,
-
-            fn pixel(self) -> vec4 {
-                let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                let color = mix(self.color, self.color_hover, self.hover);
-                sdf.box(0., 0., self.rect_size.x, self.rect_size.y, self.border_radius);
-                sdf.fill(color);
-                return sdf.result;
-            }
-        }
-        draw_text: {
-            color: #ffffff,
-            text_style: { font_size: 16.0 }
+            color: #ff190c,
+            color_hover: #d9150a,
         }
     }
 
     // Success button
-    pub ElementButtonSuccess = <Button> {
-        width: Fit,
-        height: Fit,
-        padding: {left: 16, right: 16, top: 8, bottom: 8},
-
+    pub ElementButtonSuccess = <ElementButtonBase> {
         draw_bg: {
-            instance color: #52c41a,
-            instance color_hover: #46a817,
-            instance border_radius: 3.0,
-
-            fn pixel(self) -> vec4 {
-                let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                let color = mix(self.color, self.color_hover, self.hover);
-                sdf.box(0., 0., self.rect_size.x, self.rect_size.y, self.border_radius);
-                sdf.fill(color);
-                return sdf.result;
-            }
-        }
-        draw_text: {
-            color: #ffffff,
-            text_style: { font_size: 16.0 }
+            color: #52c41a,
+            color_hover: #46a817,
         }
     }
 
     // Secondary button
-    pub ElementButtonSecondary = <Button> {
-        width: Fit,
-        height: Fit,
-        padding: {left: 16, right: 16, top: 8, bottom: 8},
-
+    pub ElementButtonSecondary = <ElementButtonBase> {
         draw_bg: {
-            instance color: #ad1457,
-            instance color_hover: #8e1148,
-            instance border_radius: 3.0,
-
-            fn pixel(self) -> vec4 {
-                let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                let color = mix(self.color, self.color_hover, self.hover);
-                sdf.box(0., 0., self.rect_size.x, self.rect_size.y, self.border_radius);
-                sdf.fill(color);
-                return sdf.result;
-            }
-        }
-        draw_text: {
-            color: #ffffff,
-            text_style: { font_size: 16.0 }
+            color: #ad1457,
+            color_hover: #8e1148,
         }
     }
 
     // Warning button
-    pub ElementButtonWarning = <Button> {
-        width: Fit,
-        height: Fit,
-        padding: {left: 16, right: 16, top: 8, bottom: 8},
-
+    pub ElementButtonWarning = <ElementButtonBase> {
         draw_bg: {
-            instance color: #faad14,
-            instance color_hover: #e09a00,
-            instance border_radius: 3.0,
-
-            fn pixel(self) -> vec4 {
-                let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                let color = mix(self.color, self.color_hover, self.hover);
-                sdf.box(0., 0., self.rect_size.x, self.rect_size.y, self.border_radius);
-                sdf.fill(color);
-                return sdf.result;
-            }
-        }
-        draw_text: {
-            color: #ffffff,
-            text_style: { font_size: 16.0 }
+            color: #faad14,
+            color_hover: #e09a00,
         }
     }
 
     // Disabled button
-    pub ElementButtonDisabled = <Button> {
-        width: Fit,
-        height: Fit,
-        padding: {left: 16, right: 16, top: 8, bottom: 8},
-
+    pub ElementButtonDisabled = <ElementButtonBase> {
+        enabled: false,
         draw_bg: {
-            instance color: #e5e5e5,
-            instance border_radius: 3.0,
-
-            fn pixel(self) -> vec4 {
-                let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                sdf.box(0., 0., self.rect_size.x, self.rect_size.y, self.border_radius);
-                sdf.fill(self.color);
-                return sdf.result;
-            }
+            color: #e5e5e5,
+            color_hover: #e5e5e5,
+            color_down: #e5e5e5,
         }
         draw_text: {
             color: #9e9e9e,
-            text_style: { font_size: 16.0 }
         }
     }
 }

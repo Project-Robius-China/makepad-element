@@ -5,6 +5,8 @@ live_design! {
     use link::shaders::*;
     use link::widgets::*;
 
+    use crate::theme::live_theme::*;
+
     // Basic list item (RNE: padding 14/16, bg = white, hairline border)
     pub ElementListItem = <View> {
         width: Fill, height: Fit,
@@ -40,14 +42,63 @@ live_design! {
             }
         }
 
-        // Chevron
-        chevron = <Label> {
-            width: Fit, height: Fit,
-            draw_text: {
-                color: #bdc6cf,
-                text_style: { font_size: 16.0 }
+        // Chevron (Sdf2d drawn arrow)
+        chevron = <ElementChevronRight> {}
+    }
+
+    // List item accordion — expandable/collapsible list item
+    // RNE: ListItem.Accordion with expand icon rotation, animated body reveal
+    pub ElementListItemAccordion = <FoldHeader> {
+        width: Fill, height: Fit,
+
+        header = <View> {
+            width: Fill, height: Fit,
+            padding: {left: 16, right: 16, top: 14, bottom: 14},
+            flow: Right,
+            spacing: 12,
+            align: {y: 0.5},
+
+            show_bg: true,
+            draw_bg: { color: #ffffff }
+
+            content = <View> {
+                width: Fill, height: Fit,
+                flow: Down,
+                spacing: 2,
+
+                title = <Label> {
+                    width: Fill, height: Fit,
+                    draw_text: {
+                        color: #242424,
+                        text_style: { font_size: 14.0 }
+                    }
+                    text: "Accordion Item"
+                }
+
+                subtitle = <Label> {
+                    width: Fill, height: Fit,
+                    draw_text: {
+                        color: #8693a0,
+                        text_style: { font_size: 12.0 }
+                    }
+                    text: ""
+                }
             }
-            text: "›"
+
+            fold_button = <FoldButton> {
+                draw_bg: {
+                    color: #bdc6cf,
+                    color_hover: #8693a0,
+                    color_active: #8693a0,
+                }
+            }
+        }
+
+        body = <View> {
+            width: Fill, height: Fit,
+            padding: {left: 16, right: 16, bottom: 8},
+            flow: Down,
+            spacing: 4,
         }
     }
 
@@ -62,20 +113,9 @@ live_design! {
         show_bg: true,
         draw_bg: { color: #ffffff }
 
-        avatar = <View> {
+        avatar = <ElementCircleViewBase> {
             width: 40, height: 40,
             align: {x: 0.5, y: 0.5},
-            show_bg: true,
-            draw_bg: {
-                instance bg_color: #2089dc,
-                fn pixel(self) -> vec4 {
-                    let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                    let c = self.rect_size * 0.5;
-                    sdf.circle(c.x, c.y, c.x);
-                    sdf.fill(self.bg_color);
-                    return sdf.result;
-                }
-            }
             <Label> {
                 width: Fit, height: Fit,
                 draw_text: { color: #ffffff, text_style: { font_size: 14.0 } }
@@ -101,10 +141,7 @@ live_design! {
             }
         }
 
-        chevron = <Label> {
-            width: Fit, height: Fit,
-            draw_text: { color: #bdc6cf, text_style: { font_size: 16.0 } }
-            text: "›"
-        }
+        // Chevron (Sdf2d drawn arrow)
+        chevron = <ElementChevronRight> {}
     }
 }

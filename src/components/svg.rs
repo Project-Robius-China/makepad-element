@@ -1,6 +1,13 @@
 use makepad_widgets::*;
 use resvg::tiny_skia::{Pixmap, Transform};
 use resvg::usvg::{Options, Tree, fontdb};
+use std::sync::LazyLock;
+
+static FONT_DB: LazyLock<std::sync::Arc<fontdb::Database>> = LazyLock::new(|| {
+    let mut db = fontdb::Database::new();
+    db.load_system_fonts();
+    std::sync::Arc::new(db)
+});
 
 live_design! {
     use link::theme::*;
@@ -103,9 +110,7 @@ impl ElementSvg {
         }
 
         let mut opt = Options::default();
-        let mut db = fontdb::Database::new();
-        db.load_system_fonts();
-        opt.fontdb = std::sync::Arc::new(db);
+        opt.fontdb = FONT_DB.clone();
 
         match Tree::from_str(&self.text, &opt) {
             Ok(tree) => {

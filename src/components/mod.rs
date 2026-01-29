@@ -32,6 +32,8 @@ pub mod fade_view;
 pub mod blur_view;
 pub mod fading_bar;
 pub mod curved_label;
+pub mod bottom_sheet;
+pub mod button_group;
 pub mod staggered_grid;
 
 use makepad_widgets::*;
@@ -71,5 +73,7 @@ pub fn live_design(cx: &mut Cx) {
     self::blur_view::live_design(cx);
     self::fading_bar::live_design(cx);
     self::curved_label::live_design(cx);
+    self::bottom_sheet::live_design(cx);
+    self::button_group::live_design(cx);
     self::staggered_grid::live_design(cx);
 }

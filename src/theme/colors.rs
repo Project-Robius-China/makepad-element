@@ -34,6 +34,19 @@ pub const ELEMENT_SOCIAL_LINKEDIN: Vec4 = vec4(0.0, 0.482, 0.714, 1.0);   // #00
 pub const ELEMENT_SOCIAL_YOUTUBE: Vec4 = vec4(0.733, 0.0, 0.0, 1.0);      // #bb0000
 pub const ELEMENT_SOCIAL_DISCORD: Vec4 = vec4(0.345, 0.396, 0.949, 1.0);  // #5865F2
 
+// Text hierarchy
+pub const ELEMENT_TEXT_HEADING: Vec4 = vec4(0.129, 0.129, 0.129, 1.0);  // #212121
+pub const ELEMENT_TEXT_PRIMARY: Vec4 = vec4(0.200, 0.200, 0.200, 1.0);  // #333333
+pub const ELEMENT_TEXT_BODY: Vec4 = vec4(0.259, 0.259, 0.259, 1.0);     // #424242
+pub const ELEMENT_TEXT_CAPTION: Vec4 = vec4(0.459, 0.459, 0.459, 1.0);  // #757575
+pub const ELEMENT_TEXT_OVERLINE: Vec4 = vec4(0.620, 0.620, 0.620, 1.0); // #9e9e9e
+
+// Overlay / backdrop
+pub const ELEMENT_BACKDROP: Vec4 = vec4(0.0, 0.0, 0.0, 0.4);           // #00000066
+
+// Border
+pub const ELEMENT_BORDER: Vec4 = vec4(0.949, 0.949, 0.949, 1.0);       // #f2f2f2
+
 // Background
 pub const ELEMENT_BG_PAGE: Vec4 = vec4(0.945, 0.945, 0.969, 1.0);      // #F1F1F7
 pub const ELEMENT_BG_CARD: Vec4 = vec4(1.0, 1.0, 1.0, 1.0);            // #FFFFFF
