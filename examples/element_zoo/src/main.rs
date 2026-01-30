@@ -735,9 +735,10 @@ live_design! {
                             draw_text: { color: #666666, text_style: { font_size: 16.0 } } text: "Interactive (tap to rate):" }
                         <View> { width: Fill, height: Fit, flow: Right, spacing: 16, align: {y: 0.5},
                             interactive_rating = <ElementRating> {
-                                value: 3,
+                                value: 3.0,
                                 filled_color: #faad14,
                                 empty_color: #bdc6cf,
+                                show_rating: true,
                             }
                             rating_label = <Label> { width: Fit, height: Fit,
                                 draw_text: { color: #888888, text_style: { font_size: 14.0 } } text: "3 stars" }
@@ -747,7 +748,7 @@ live_design! {
                         <Label> { width: Fit, height: Fit, margin: {top: 16},
                             draw_text: { color: #666666, text_style: { font_size: 16.0 } } text: "Read-only:" }
                         <ElementRating> {
-                            value: 4,
+                            value: 4.0,
                             read_only: true,
                         }
 
@@ -755,7 +756,7 @@ live_design! {
                         <Label> { width: Fit, height: Fit, margin: {top: 16},
                             draw_text: { color: #666666, text_style: { font_size: 16.0 } } text: "Custom colors:" }
                         <ElementRating> {
-                            value: 2,
+                            value: 2.0,
                             filled_color: #e53935,
                             empty_color: #ffcdd2,
                         }
@@ -1479,7 +1480,11 @@ impl MatchEvent for App {
 
         // Handle interactive rating changes
         if let Some(value) = self.ui.element_rating(ids!(interactive_rating)).changed(&actions) {
-            let text = format!("{} star{}", value, if value == 1 { "" } else { "s" });
+            let text = if (value - value.round()).abs() < 0.01 {
+                format!("{:.0} star{}", value, if value as i32 == 1 { "" } else { "s" })
+            } else {
+                format!("{:.1} stars", value)
+            };
             self.ui.label(ids!(rating_label)).set_text(cx, &text);
         }
     }
