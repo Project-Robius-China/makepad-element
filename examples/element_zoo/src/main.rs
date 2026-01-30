@@ -744,6 +744,15 @@ live_design! {
                                 draw_text: { color: #888888, text_style: { font_size: 14.0 } } text: "3 stars" }
                         }
 
+                        // Half-star Rating (SVG-based)
+                        <Label> { width: Fit, height: Fit, margin: {top: 16},
+                            draw_text: { color: #666666, text_style: { font_size: 16.0 } } text: "Half-star support (fractions: 2):" }
+                        <ElementRating> {
+                            value: 3.5,
+                            fractions: 2,
+                            show_rating: true,
+                        }
+
                         // Read-only Rating
                         <Label> { width: Fit, height: Fit, margin: {top: 16},
                             draw_text: { color: #666666, text_style: { font_size: 16.0 } } text: "Read-only:" }

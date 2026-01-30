@@ -4,15 +4,16 @@ live_design! {
     use link::theme::*;
     use link::shaders::*;
     use link::widgets::*;
+    use crate::components::svg::ElementSvg;
 
-    // Single star (filled)
+    // Single star (filled) - for static variants
     StarFilled = <Label> {
         width: Fit, height: Fit,
         draw_text: { color: #faad14, text_style: { font_size: 20.0 } }
         text: "★"
     }
 
-    // Single star (empty)
+    // Single star (empty) - for static variants
     StarEmpty = <Label> {
         width: Fit, height: Fit,
         draw_text: { color: #bdc6cf, text_style: { font_size: 20.0 } }
@@ -67,19 +68,17 @@ live_design! {
         <StarFilled> {} <StarFilled> {}
     }
 
-    // Simple clickable star using Label
-    ClickableStar = <View> {
+    // SVG-based clickable star
+    SvgStar = <View> {
         width: Fit, height: Fit,
         cursor: Hand,
-
-        star_label = <Label> {
-            width: Fit, height: Fit,
-            draw_text: { color: #bdc6cf, text_style: { font_size: 24.0 } }
-            text: "★"
+        star_svg = <ElementSvg> {
+            width: 24, height: 24,
+            scale: 2.0,
         }
     }
 
-    // Interactive rating component (tap to select)
+    // Interactive rating component with SVG stars (supports half-star)
     pub ElementRating = {{ElementRating}} {
         width: Fit, height: Fit,
         flow: Right, spacing: 4,
@@ -89,7 +88,8 @@ live_design! {
         filled_color: #faad14,
         empty_color: #bdc6cf,
         max_stars: 5,
-        value: 0,
+        value: 0.0,
+        fractions: 1,
         read_only: false,
         show_rating: false,
 
@@ -97,11 +97,11 @@ live_design! {
             width: Fit, height: Fit,
             flow: Right, spacing: 4,
 
-            star0 = <ClickableStar> {}
-            star1 = <ClickableStar> {}
-            star2 = <ClickableStar> {}
-            star3 = <ClickableStar> {}
-            star4 = <ClickableStar> {}
+            star0 = <SvgStar> {}
+            star1 = <SvgStar> {}
+            star2 = <SvgStar> {}
+            star3 = <SvgStar> {}
+            star4 = <SvgStar> {}
         }
 
         rating_label = <Label> {
@@ -136,9 +136,13 @@ pub struct ElementRating {
     #[live(5)]
     max_stars: i64,
 
-    /// Rating value (0 to max_stars)
+    /// Rating value (supports fractions like 3.5)
     #[live(0.0)]
     value: f64,
+
+    /// Number of fraction steps (1 = whole stars, 2 = half stars)
+    #[live(1)]
+    fractions: i64,
 
     #[live(false)]
     read_only: bool,
@@ -170,8 +174,20 @@ impl Widget for ElementRating {
             let star = self.view.view(ids!(stars_container)).view(&[star_id]);
             if let Hit::FingerUp(fe) = event.hits(cx, star.area()) {
                 if fe.is_over {
-                    // Set value to clicked star index + 1
-                    let new_value = (i + 1) as f64;
+                    // Calculate new value based on fractions
+                    let base_value = (i + 1) as f64;
+                    let new_value = if self.fractions >= 2 {
+                        // For half-star support, check click position
+                        let rel_x = fe.abs.x - star.area().rect(cx).pos.x;
+                        let star_width = star.area().rect(cx).size.x;
+                        if rel_x < star_width / 2.0 {
+                            base_value - 0.5
+                        } else {
+                            base_value
+                        }
+                    } else {
+                        base_value
+                    };
 
                     if (new_value - self.value).abs() > 0.01 {
                         self.value = new_value;
@@ -188,21 +204,71 @@ impl Widget for ElementRating {
     }
 
     fn draw_walk(&mut self, cx: &mut Cx2d, scope: &mut Scope, walk: Walk) -> DrawStep {
-        // Update star colors and rating label before drawing
-        self.update_stars_colors(cx);
+        // Update star SVGs and rating label before drawing
+        self.update_stars_svg(cx);
         self.update_rating_label(cx);
         self.view.draw_walk(cx, scope, walk)
     }
 }
 
 impl ElementRating {
+    /// Generate SVG star with specified fill amount (0.0, 0.5, or 1.0)
+    fn generate_star_svg(&self, fill_amount: f64) -> String {
+        let size = self.star_size as i32;
+        let filled_color = format!(
+            "#{:02x}{:02x}{:02x}",
+            (self.filled_color.x * 255.0) as u8,
+            (self.filled_color.y * 255.0) as u8,
+            (self.filled_color.z * 255.0) as u8
+        );
+        let empty_color = format!(
+            "#{:02x}{:02x}{:02x}",
+            (self.empty_color.x * 255.0) as u8,
+            (self.empty_color.y * 255.0) as u8,
+            (self.empty_color.z * 255.0) as u8
+        );
+
+        // Star path (5-pointed star centered in viewBox)
+        let star_path = "M12,2 L15.09,8.26 L22,9.27 L17,14.14 L18.18,21.02 L12,17.77 L5.82,21.02 L7,14.14 L2,9.27 L8.91,8.26 Z";
+
+        if fill_amount >= 1.0 {
+            // Fully filled star
+            format!(
+                "<svg xmlns='http://www.w3.org/2000/svg' width='{}' height='{}' viewBox='0 0 24 24'>\
+                <path d='{}' fill='{}'/>\
+                </svg>",
+                size, size, star_path, filled_color
+            )
+        } else if fill_amount >= 0.5 {
+            // Half-filled star using clipPath
+            format!(
+                "<svg xmlns='http://www.w3.org/2000/svg' width='{}' height='{}' viewBox='0 0 24 24'>\
+                <defs>\
+                <clipPath id='half'><rect x='0' y='0' width='12' height='24'/></clipPath>\
+                </defs>\
+                <path d='{}' fill='{}'/>\
+                <path d='{}' fill='{}' clip-path='url(#half)'/>\
+                </svg>",
+                size, size, star_path, empty_color, star_path, filled_color
+            )
+        } else {
+            // Empty star
+            format!(
+                "<svg xmlns='http://www.w3.org/2000/svg' width='{}' height='{}' viewBox='0 0 24 24'>\
+                <path d='{}' fill='{}'/>\
+                </svg>",
+                size, size, star_path, empty_color
+            )
+        }
+    }
+
     fn update_stars(&mut self, cx: &mut Cx) {
-        self.update_stars_colors(cx);
+        self.update_stars_svg(cx);
         self.update_rating_label(cx);
         self.view.redraw(cx);
     }
 
-    fn update_stars_colors(&mut self, cx: &mut Cx) {
+    fn update_stars_svg(&mut self, cx: &mut Cx) {
         let stars_container = self.view.view(ids!(stars_container));
 
         for i in 0..(self.max_stars.min(5) as usize) {
@@ -215,17 +281,16 @@ impl ElementRating {
                 _ => continue,
             };
 
-            let star_index = (i + 1) as f64;
+            let star_index = i as f64;
+            let fill_amount = (self.value - star_index).clamp(0.0, 1.0);
 
-            // Star is filled if value >= star index
-            let color = if self.value >= star_index {
-                self.filled_color
-            } else {
-                self.empty_color
-            };
+            // Generate SVG based on fill amount
+            let svg_text = self.generate_star_svg(fill_amount);
 
-            stars_container.label(&[star_id, id!(star_label)]).apply_over(cx, live! {
-                draw_text: { color: (color) }
+            // Update the SVG widget using apply_over
+            let star_view = stars_container.view(&[star_id]);
+            star_view.apply_over(cx, live! {
+                star_svg = { text: (svg_text) }
             });
         }
     }
