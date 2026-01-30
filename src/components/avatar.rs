@@ -5,26 +5,17 @@ live_design! {
     use link::shaders::*;
     use link::widgets::*;
 
+    use crate::theme::live_theme::*;
+
     // Small avatar (34x34) - title fontSize = width/2 = 17
     pub ElementAvatarSmall = <View> {
         width: 34, height: 34,
         flow: Overlay,
         align: {x: 0.5, y: 0.5},
 
-        text_view = <View> {
+        text_view = <ElementCircleViewBase> {
             width: Fill, height: Fill,
             align: {x: 0.5, y: 0.5},
-            show_bg: true,
-            draw_bg: {
-                instance bg_color: #2089dc,
-                fn pixel(self) -> vec4 {
-                    let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                    let c = self.rect_size * 0.5;
-                    sdf.circle(c.x, c.y, c.x);
-                    sdf.fill(self.bg_color);
-                    return sdf.result;
-                }
-            }
             label = <Label> {
                 width: Fit, height: Fit,
                 draw_text: { color: #ffffff, text_style: { font_size: 17.0 } }
@@ -39,20 +30,9 @@ live_design! {
         flow: Overlay,
         align: {x: 0.5, y: 0.5},
 
-        text_view = <View> {
+        text_view = <ElementCircleViewBase> {
             width: Fill, height: Fill,
             align: {x: 0.5, y: 0.5},
-            show_bg: true,
-            draw_bg: {
-                instance bg_color: #2089dc,
-                fn pixel(self) -> vec4 {
-                    let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                    let c = self.rect_size * 0.5;
-                    sdf.circle(c.x, c.y, c.x);
-                    sdf.fill(self.bg_color);
-                    return sdf.result;
-                }
-            }
             label = <Label> {
                 width: Fit, height: Fit,
                 draw_text: { color: #ffffff, text_style: { font_size: 25.0 } }
@@ -67,20 +47,9 @@ live_design! {
         flow: Overlay,
         align: {x: 0.5, y: 0.5},
 
-        text_view = <View> {
+        text_view = <ElementCircleViewBase> {
             width: Fill, height: Fill,
             align: {x: 0.5, y: 0.5},
-            show_bg: true,
-            draw_bg: {
-                instance bg_color: #2089dc,
-                fn pixel(self) -> vec4 {
-                    let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                    let c = self.rect_size * 0.5;
-                    sdf.circle(c.x, c.y, c.x);
-                    sdf.fill(self.bg_color);
-                    return sdf.result;
-                }
-            }
             label = <Label> {
                 width: Fit, height: Fit,
                 draw_text: { color: #ffffff, text_style: { font_size: 37.5 } }
@@ -95,20 +64,9 @@ live_design! {
         flow: Overlay,
         align: {x: 0.5, y: 0.5},
 
-        text_view = <View> {
+        text_view = <ElementCircleViewBase> {
             width: Fill, height: Fill,
             align: {x: 0.5, y: 0.5},
-            show_bg: true,
-            draw_bg: {
-                instance bg_color: #2089dc,
-                fn pixel(self) -> vec4 {
-                    let sdf = Sdf2d::viewport(self.pos * self.rect_size);
-                    let c = self.rect_size * 0.5;
-                    sdf.circle(c.x, c.y, c.x);
-                    sdf.fill(self.bg_color);
-                    return sdf.result;
-                }
-            }
             label = <Label> {
                 width: Fit, height: Fit,
                 draw_text: { color: #ffffff, text_style: { font_size: 75.0 } }

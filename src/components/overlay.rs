@@ -5,13 +5,14 @@ live_design! {
     use link::shaders::*;
     use link::widgets::*;
 
-    // Full-screen overlay backdrop (RNE: backdrop rgba(0,0,0,0.4), content padding 10, borderRadius 3)
+    // Full-screen overlay backdrop
+    // RNE: backdrop rgba(0,0,0,0.4), content padding 10, borderRadius 3
     pub ElementOverlay = <View> {
         width: Fill, height: Fill,
         flow: Overlay,
         align: {x: 0.5, y: 0.5},
 
-        // Backdrop
+        // Backdrop: black at 40% opacity (0x66/0xFF ≈ 0.4)
         backdrop = <View> {
             width: Fill, height: Fill,
             show_bg: true,
