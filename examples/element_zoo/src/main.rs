@@ -49,6 +49,7 @@ live_design! {
     // use makepad_element::components::curved_label::*; // BUG: widget doesn't render
     use makepad_element::components::staggered_grid::*;
     use makepad_element::theme::font::*;
+    use makepad_element::theme::live_theme::*;
 
     // Re-export Manrope font for use in this live_design! scope
     pub FONT_MANROPE = <ELEMENT_FONT_MANROPE> {}
@@ -146,6 +147,24 @@ live_design! {
                         text: "Element Zoo" }
 
                     <View> { width: Fill, height: Fit }
+
+                    // Theme toggle button
+                    theme_toggle = <Button> {
+                        width: Fit, height: Fit,
+                        padding: {left: 12, right: 12, top: 6, bottom: 6},
+                        draw_bg: {
+                            fn pixel(self) -> vec4 {
+                                let sdf = Sdf2d::viewport(self.pos * self.rect_size);
+                                sdf.box(0., 0., self.rect_size.x, self.rect_size.y, 4.0);
+                                sdf.fill(mix(#ffffff33, #ffffff55, self.hover));
+                                return sdf.result;
+                            }
+                        }
+                        draw_text: { color: #ffffff, text_style: <THEME_FONT_REGULAR> { font_size: 12.0 } }
+                        text: "Dark Mode"
+                    }
+
+                    <View> { width: 12, height: Fit }
 
                     <Label> { width: Fit, height: Fit,
                         draw_text: { color: #ffffffcc, text_style: <THEME_FONT_REGULAR> { font_size: 12.0 } }
@@ -1220,6 +1239,171 @@ live_design! {
                         <StaggeredGridDemo> {}
                     }
 
+                    // 35. Dark Theme
+                    dark_theme_detail_page = <ScrollXYView> {
+                        visible: false,
+                        width: Fill, height: Fill, flow: Down,
+                        padding: 0, spacing: 0,
+
+                        // Dark background container
+                        <View> {
+                            width: Fill, height: Fit,
+                            flow: Down, spacing: 16,
+                            padding: {left: 16, right: 16, top: 16, bottom: 24},
+                            show_bg: true,
+                            draw_bg: { color: #111114 }
+
+                            <Label> { width: Fit, height: Fit, margin: {bottom: 8},
+                                draw_text: { color: #f2f2f2, text_style: { font_size: 24.0 } } text: "Dark Theme" }
+                            <Label> { width: Fit, height: Fit,
+                                draw_text: { color: #9e9e9e, text_style: { font_size: 14.0 } }
+                                text: "Dark theme component variants following React Native Elements darkColors." }
+
+                            // Buttons
+                            <Label> { width: Fit, height: Fit, margin: {top: 16},
+                                draw_text: { color: #bdc6cf, text_style: { font_size: 14.0 } } text: "Buttons" }
+                            <View> { width: Fill, height: Fit, flow: Right, spacing: 12,
+                                <ElementButtonBaseDark> { text: "Primary" }
+                                <ElementButtonBaseDark> {
+                                    draw_bg: { color: #aa49eb, color_hover: #bb6aef, color_down: #8a39cb }
+                                    text: "Secondary"
+                                }
+                                <ElementButtonBaseDark> {
+                                    draw_bg: { color: #439946, color_hover: #54aa59, color_down: #357a38 }
+                                    text: "Success"
+                                }
+                            }
+
+                            // Cards
+                            <Label> { width: Fit, height: Fit, margin: {top: 16},
+                                draw_text: { color: #bdc6cf, text_style: { font_size: 14.0 } } text: "Card" }
+                            <ElementCardBaseDark> {
+                                flow: Down, spacing: 8,
+                                <Label> { draw_text: { color: #f2f2f2, text_style: { font_size: 16.0 } } text: "Dark Card Title" }
+                                <Label> { draw_text: { color: #9e9e9e, text_style: { font_size: 14.0 } }
+                                    text: "This is a dark theme card with proper contrast." }
+                            }
+
+                            // Progress & Skeleton
+                            <Label> { width: Fit, height: Fit, margin: {top: 16},
+                                draw_text: { color: #bdc6cf, text_style: { font_size: 14.0 } } text: "Progress & Skeleton" }
+                            <ElementLinearProgressBaseDark> { draw_bg: { progress: 0.65 } }
+                            <View> { width: Fill, height: 8 }
+                            <ElementSkeletonBaseDark> { width: Fill, height: 16 }
+                            <View> { width: Fill, height: 4 }
+                            <ElementSkeletonBaseDark> { width: 200, height: 16 }
+
+                            // Badges & Chips
+                            <Label> { width: Fit, height: Fit, margin: {top: 16},
+                                draw_text: { color: #bdc6cf, text_style: { font_size: 14.0 } } text: "Badges & Chips" }
+                            <View> { width: Fill, height: Fit, flow: Right, spacing: 12, align: {y: 0.5},
+                                <ElementBadgeBaseDark> { label = { text: "3" } }
+                                <ElementBadgeBaseDark> { label = { text: "99+" } }
+                                <ElementChipBaseDark> {
+                                    <Label> { draw_text: { color: #f2f2f2, text_style: { font_size: 13.0 } } text: "Dark Chip" }
+                                }
+                            }
+
+                            // List Items
+                            <Label> { width: Fit, height: Fit, margin: {top: 16},
+                                draw_text: { color: #bdc6cf, text_style: { font_size: 14.0 } } text: "List Items" }
+                            <ElementListItemBaseDark> {
+                                <View> { width: Fill, height: Fit, flow: Down, spacing: 2,
+                                    <Label> { draw_text: { color: #f2f2f2, text_style: { font_size: 14.0 } } text: "Dark List Item" }
+                                    <Label> { draw_text: { color: #9e9e9e, text_style: { font_size: 12.0 } } text: "Subtitle text" }
+                                }
+                                <ElementChevronRightDark> {}
+                            }
+                            <ElementDividerDark> {}
+                            <ElementListItemBaseDark> {
+                                <ElementCircleViewBaseDark> {
+                                    width: 40, height: 40, align: {x: 0.5, y: 0.5},
+                                    <Label> { draw_text: { color: #f2f2f2, text_style: { font_size: 14.0 } } text: "JD" }
+                                }
+                                <View> { width: Fill, height: Fit, flow: Down, spacing: 2, margin: {left: 12},
+                                    <Label> { draw_text: { color: #f2f2f2, text_style: { font_size: 14.0 } } text: "John Doe" }
+                                    <Label> { draw_text: { color: #9e9e9e, text_style: { font_size: 12.0 } } text: "john@example.com" }
+                                }
+                                <ElementChevronRightDark> {}
+                            }
+
+                            // Input
+                            <Label> { width: Fit, height: Fit, margin: {top: 16},
+                                draw_text: { color: #bdc6cf, text_style: { font_size: 14.0 } } text: "Input" }
+                            <ElementInputBaseDark> {
+                                <Label> { draw_text: { color: #757575, text_style: { font_size: 14.0 } } text: "Enter text..." }
+                            }
+
+                            // Dialog
+                            <Label> { width: Fit, height: Fit, margin: {top: 16},
+                                draw_text: { color: #bdc6cf, text_style: { font_size: 14.0 } } text: "Dialog" }
+                            <ElementDialogBaseDark> {
+                                flow: Down, spacing: 12,
+                                <Label> { draw_text: { color: #f2f2f2, text_style: { font_size: 18.0 } } text: "Dark Dialog" }
+                                <Label> { draw_text: { color: #9e9e9e, text_style: { font_size: 14.0 } }
+                                    text: "This is a dialog with dark theme styling." }
+                                <View> { width: Fill, height: Fit, flow: Right, spacing: 8, align: {x: 1.0},
+                                    <ElementButtonBaseDark> {
+                                        draw_bg: { color: #393e42, color_hover: #43484d, color_down: #2e3236 }
+                                        text: "Cancel"
+                                    }
+                                    <ElementButtonBaseDark> { text: "Confirm" }
+                                }
+                            }
+
+                            // Tooltip
+                            <Label> { width: Fit, height: Fit, margin: {top: 16},
+                                draw_text: { color: #bdc6cf, text_style: { font_size: 14.0 } } text: "Tooltip" }
+                            <ElementTooltipBaseDark> {
+                                <Label> { draw_text: { color: #f2f2f2, text_style: { font_size: 12.0 } } text: "Dark tooltip message" }
+                            }
+
+                            // Header
+                            <Label> { width: Fit, height: Fit, margin: {top: 16},
+                                draw_text: { color: #bdc6cf, text_style: { font_size: 14.0 } } text: "Header" }
+                        }
+                        <ElementHeaderBaseDark> {
+                            bar = { center = { title = { text: "Dark Header" } } }
+                        }
+
+                        // Tab Bar
+                        <View> {
+                            width: Fill, height: Fit,
+                            padding: {left: 16, right: 16, top: 16, bottom: 16},
+                            show_bg: true,
+                            draw_bg: { color: #111114 }
+                            flow: Down, spacing: 8,
+
+                            <Label> { width: Fit, height: Fit,
+                                draw_text: { color: #bdc6cf, text_style: { font_size: 14.0 } } text: "Tab Bar" }
+                        }
+                        <ElementTabBarDark> {
+                            bar = {
+                                <Label> { padding: {left: 16, right: 16, top: 8, bottom: 8},
+                                    draw_text: { color: #f2f2f2, text_style: { font_size: 14.0 } } text: "Tab 1" }
+                                <Label> { padding: {left: 16, right: 16, top: 8, bottom: 8},
+                                    draw_text: { color: #9e9e9e, text_style: { font_size: 14.0 } } text: "Tab 2" }
+                                <Label> { padding: {left: 16, right: 16, top: 8, bottom: 8},
+                                    draw_text: { color: #9e9e9e, text_style: { font_size: 14.0 } } text: "Tab 3" }
+                            }
+                        }
+
+                        // Search Bar
+                        <View> {
+                            width: Fill, height: Fit,
+                            padding: {left: 16, right: 16, top: 16, bottom: 24},
+                            show_bg: true,
+                            draw_bg: { color: #111114 }
+                            flow: Down, spacing: 8,
+
+                            <Label> { width: Fit, height: Fit,
+                                draw_text: { color: #bdc6cf, text_style: { font_size: 14.0 } } text: "Search Bar" }
+                            <ElementSearchBarBaseDark> {
+                                <Label> { draw_text: { color: #757575, text_style: { font_size: 14.0 } } text: "Search..." }
+                            }
+                        }
+                    }
+
                 }
                 } // main_area
             }
@@ -1339,6 +1523,7 @@ impl ComponentTree {
             ("FadingBar", &["Vertical", "Horizontal"]),
             // CurvedLabel removed — BUG: draw_abs does not render inside turtle context
             ("StaggeredGrid", &["2-Column Masonry"]),
+            ("DarkTheme", &["Buttons", "Cards", "Progress", "Badges", "ListItems", "Dialog"]),
         ];
 
         let tiers: &[(&str, &[usize])] = &[
@@ -1347,6 +1532,7 @@ impl ComponentTree {
             ("Tier 3: Composite", &[11, 12, 13, 14, 15, 16, 17, 18, 19]),
             ("Tier 4: Advanced", &[20, 21, 22, 23, 24, 25, 26, 27, 28, 29]),
             ("Tier 5: Wonderous", &[30, 31, 32, 33]),
+            ("Tier 6: Theme", &[34]),
         ];
 
         let mut root_edges = Vec::new();
@@ -1430,7 +1616,7 @@ impl Widget for ComponentTree {
         self.ensure_built();
         while self.file_tree.draw_walk(cx, scope, walk).is_step() {
             // Open tier folders by default
-            for tier_name in &["Tier 1: Basic", "Tier 2: Form", "Tier 3: Composite", "Tier 4: Advanced"] {
+            for tier_name in &["Tier 1: Basic", "Tier 2: Form", "Tier 3: Composite", "Tier 4: Advanced", "Tier 6: Theme"] {
                 let tier_id = LiveId::from_str(tier_name);
                 self.file_tree.set_folder_is_open(cx, tier_id, true, Animate::No);
             }
@@ -1456,6 +1642,9 @@ pub struct App {
 
     #[rust]
     node_to_page: HashMap<LiveId, LiveId>,
+
+    #[rust]
+    is_dark_mode: bool,
 }
 
 impl LiveRegister for App {
@@ -1485,6 +1674,12 @@ impl MatchEvent for App {
         }
         if let Some(folder_id) = ft.folder_clicked(actions) {
             self.show_page_for_node(cx, folder_id);
+        }
+
+        // Handle theme toggle button
+        if self.ui.button(ids!(theme_toggle)).clicked(&actions) {
+            self.is_dark_mode = !self.is_dark_mode;
+            self.apply_theme(cx);
         }
 
         // Handle interactive rating changes
@@ -1536,6 +1731,7 @@ impl App {
             ("BlurView", "blur_view_detail_page"),
             ("FadingBar", "fading_bar_detail_page"),
             ("StaggeredGrid", "staggered_grid_detail_page"),
+            ("DarkTheme", "dark_theme_detail_page"),
         ];
 
         let variations: &[(&str, &[&str])] = &[
@@ -1573,6 +1769,7 @@ impl App {
             ("BlurView", &["Single Stage", "4-Stage Cascade"]),
             ("FadingBar", &["Vertical", "Horizontal"]),
             ("StaggeredGrid", &["2-Column Masonry"]),
+            ("DarkTheme", &["Buttons", "Cards", "Progress", "Badges", "ListItems", "Dialog"]),
         ];
 
         for (comp_name, page_name) in components {
@@ -1605,7 +1802,7 @@ impl App {
             "pricing_card_detail_page", "skeleton_detail_page", "speed_dial_detail_page",
             "social_icon_detail_page", "markdown_detail_page", "svg_detail_page",
             "fade_view_detail_page", "blur_view_detail_page", "fading_bar_detail_page",
-            "staggered_grid_detail_page",
+            "staggered_grid_detail_page", "dark_theme_detail_page",
         ].iter().map(|s| LiveId::from_str(s)).collect()
     }
 
@@ -1620,5 +1817,46 @@ impl App {
         if let Some(&page_id) = self.node_to_page.get(&node_id) {
             self.ui.view(&[page_id]).set_visible(cx, true);
         }
+    }
+
+    fn apply_theme(&mut self, cx: &mut Cx) {
+        if self.is_dark_mode {
+            // Dark theme
+            self.ui.view(ids!(header_bar)).apply_over(cx, live! {
+                draw_bg: { color: #1e1e22 }
+            });
+            self.ui.button(ids!(theme_toggle)).apply_over(cx, live! {
+                draw_text: { color: #f2f2f2 }
+                text: "Light Mode"
+            });
+            self.ui.view(ids!(content_panel)).apply_over(cx, live! {
+                show_bg: true,
+                draw_bg: { color: #111114 }
+            });
+            self.ui.view(ids!(welcome_page)).apply_over(cx, live! {
+                show_bg: true,
+                draw_bg: { color: #111114 }
+            });
+            // Update welcome page labels
+            self.ui.label(ids!(welcome_page.Label)).apply_over(cx, live! {
+                draw_text: { color: #f2f2f2 }
+            });
+        } else {
+            // Light theme
+            self.ui.view(ids!(header_bar)).apply_over(cx, live! {
+                draw_bg: { color: #2089dc }
+            });
+            self.ui.button(ids!(theme_toggle)).apply_over(cx, live! {
+                draw_text: { color: #ffffff }
+                text: "Dark Mode"
+            });
+            self.ui.view(ids!(content_panel)).apply_over(cx, live! {
+                show_bg: false,
+            });
+            self.ui.view(ids!(welcome_page)).apply_over(cx, live! {
+                show_bg: false,
+            });
+        }
+        self.ui.redraw(cx);
     }
 }
