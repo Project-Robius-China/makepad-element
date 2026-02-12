@@ -672,17 +672,17 @@ live_design! {
                         }
                     }
 
-                    // 16. Tab
+                    // 16. Tab & TabView
                     tab_detail_page = <ScrollXYView> {
                         visible: false,
                         width: Fill, height: Fill, flow: Down,
                         padding: {left: 16, right: 16, top: 16, bottom: 16}, spacing: 16,
 
                         <Label> { width: Fit, height: Fit, margin: {bottom: 16},
-                            draw_text: { color: #333333, text_style: { font_size: 24.0 } } text: "Tab" }
+                            draw_text: { color: #333333, text_style: { font_size: 24.0 } } text: "Tab & TabView" }
 
                         <Label> { width: Fit, height: Fit,
-                            draw_text: { color: #888888, text_style: { font_size: 14.0 } } text: "Tab bar with radio buttons" }
+                            draw_text: { color: #888888, text_style: { font_size: 14.0 } } text: "Tab bar (static)" }
 
                         <View> {
                             width: Fill, height: Fit, flow: Right,
@@ -690,6 +690,73 @@ live_design! {
                             <ElementTabItem> { text: "Tab 1", animator: { selected = { default: on } } }
                             <ElementTabItem> { text: "Tab 2" }
                             <ElementTabItem> { text: "Tab 3" }
+                        }
+
+                        <Label> { width: Fit, height: Fit, margin: {top: 16},
+                            draw_text: { color: #888888, text_style: { font_size: 14.0 } } text: "Interactive TabView (click tabs to switch content)" }
+
+                        <ElementTabView> {
+                            width: Fill, height: 280,
+
+                            tab_bar = {
+                                bar = {
+                                    tab0 = <ElementTabItem> { text: "Recent", animator: { selected = { default: on } } }
+                                    tab1 = <ElementTabItem> { text: "Favorites" }
+                                    tab2 = <ElementTabItem> { text: "Cart" }
+                                }
+                            }
+
+                            content = {
+                                active_page: page0,
+
+                                page0 = <ElementTabViewItem> {
+                                    align: {x: 0.5, y: 0.3},
+                                    <Label> { draw_text: { color: #333333, text_style: { font_size: 18.0 } } text: "Recent Items" }
+                                    <Label> { draw_text: { color: #757575, text_style: { font_size: 14.0 } } text: "Your recently viewed items appear here." }
+                                }
+
+                                page1 = <ElementTabViewItem> {
+                                    align: {x: 0.5, y: 0.3},
+                                    <Label> { draw_text: { color: #333333, text_style: { font_size: 18.0 } } text: "Favorites" }
+                                    <Label> { draw_text: { color: #757575, text_style: { font_size: 14.0 } } text: "Items you've marked as favorite." }
+                                }
+
+                                page2 = <ElementTabViewItem> {
+                                    align: {x: 0.5, y: 0.3},
+                                    <Label> { draw_text: { color: #333333, text_style: { font_size: 18.0 } } text: "Shopping Cart" }
+                                    <Label> { draw_text: { color: #757575, text_style: { font_size: 14.0 } } text: "Your cart is empty. Start shopping!" }
+                                }
+                            }
+                        }
+
+                        <Label> { width: Fit, height: Fit, margin: {top: 16},
+                            draw_text: { color: #888888, text_style: { font_size: 14.0 } } text: "Custom colored TabView" }
+
+                        <ElementTabView> {
+                            width: Fill, height: 200,
+
+                            tab_bar = {
+                                bar = {
+                                    draw_bg: { color: #8e44ad }
+                                    tab0 = <ElementTabItem> { text: "Home", animator: { selected = { default: on } } }
+                                    tab1 = <ElementTabItem> { text: "Profile" }
+                                }
+                                indicator = { draw_bg: { color: #f39c12 } }
+                            }
+
+                            content = {
+                                active_page: page0,
+
+                                page0 = <ElementTabViewItem> {
+                                    align: {x: 0.5, y: 0.3},
+                                    <Label> { draw_text: { color: #333333, text_style: { font_size: 16.0 } } text: "Home Page" }
+                                }
+
+                                page1 = <ElementTabViewItem> {
+                                    align: {x: 0.5, y: 0.3},
+                                    <Label> { draw_text: { color: #333333, text_style: { font_size: 16.0 } } text: "Profile Page" }
+                                }
+                            }
                         }
                     }
 
@@ -1346,7 +1413,7 @@ impl ComponentTree {
             ("Chip", &["Solid", "Outline"]),
             ("Header", &["Primary", "Transparent"]),
             ("ListItem", &["Basic", "WithAvatar"]),
-            ("Tab", &["TabBar"]),
+            ("Tab", &["TabBar", "TabView"]),
             ("SearchBar", &["Default", "Custom"]),
             ("LinearProgress", &["25%", "50%", "75%", "100%", "Error"]),
             ("Rating", &["0 Stars", "1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars"]),
@@ -1606,7 +1673,7 @@ impl App {
             ("Chip", &["Solid", "Outline"]),
             ("Header", &["Primary", "Transparent"]),
             ("ListItem", &["Basic", "WithAvatar"]),
-            ("Tab", &["TabBar"]),
+            ("Tab", &["TabBar", "TabView"]),
             ("SearchBar", &["Default", "Custom"]),
             ("LinearProgress", &["25%", "50%", "75%", "100%", "Error"]),
             ("Rating", &["0 Stars", "1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars"]),
