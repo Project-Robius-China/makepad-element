@@ -7,11 +7,47 @@ live_design! {
     use link::shaders::*;
     use link::widgets::*;
 
-    // Tab bar item
-    // RNE: paddingH 16, paddingV 8, text color white (primary variant)
+    // Tab bar item with clear selected/unselected visual states
+    // Unselected: transparent bg, white text | Selected: white bg, primary text
     pub ElementTabItem = <RadioButtonTab> {
         width: Fit, height: Fit,
-        padding: {left: 16, right: 16, top: 8, bottom: 8},
+        padding: {left: 16, right: 16, top: 10, bottom: 10},
+
+        draw_bg: {
+            border_size: 0.0,
+            border_radius: 4.0,
+            // Unselected: transparent
+            color: #00000000,
+            color_2: #00000000,
+            // Selected: white with slight transparency
+            color_active: #ffffffee,
+            color_2_active: #ffffffee,
+            // Disabled
+            color_disabled: #00000000,
+            color_2_disabled: #00000000,
+            // Border colors (all transparent for clean look)
+            border_color: #00000000,
+            border_color_hover: #ffffff30,
+            border_color_down: #ffffff50,
+            border_color_active: #00000000,
+            border_color_focus: #00000000,
+            border_color_disabled: #00000000,
+            border_color_2: #00000000,
+            border_color_2_hover: #00000000,
+            border_color_2_down: #00000000,
+            border_color_2_active: #00000000,
+            border_color_2_focus: #00000000,
+            border_color_2_disabled: #00000000,
+        }
+
+        draw_text: {
+            // Unselected: white text
+            color: #ffffffcc,
+            // Selected: primary blue text
+            color_active: #2089dc,
+            color_disabled: #ffffff66,
+            text_style: { font_size: 14.0 }
+        }
     }
 
     // Tab bar container (RNE: bg = primary #2089dc)
