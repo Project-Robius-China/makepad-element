@@ -1,6 +1,6 @@
 use makepad_widgets::*;
 use makepad_widgets::page_flip::PageFlip;
-use makepad_widgets::radio_button::RadioButtonAction;
+use makepad_widgets::radio_button::{RadioButton, RadioButtonAction};
 
 live_design! {
     use link::theme::*;
@@ -144,13 +144,13 @@ impl Widget for ElementTabView {
             self.view.handle_event(cx, event, scope);
         });
 
-        // Collect tab widget UIDs from the bar
+        // Collect tab widgets from the bar
         let bar = self.view.view(ids!(tab_bar.bar));
-        let mut tab_uids: Vec<(usize, WidgetUid)> = Vec::new();
+        let mut tabs: Vec<(usize, WidgetUid, WidgetRef)> = Vec::new();
         for (i, tab_id) in TAB_IDS.iter().enumerate() {
             let tab_widget = bar.widget(&[*tab_id]);
             if !tab_widget.is_empty() {
-                tab_uids.push((i, tab_widget.widget_uid()));
+                tabs.push((i, tab_widget.widget_uid(), tab_widget));
             }
         }
 
@@ -159,9 +159,20 @@ impl Widget for ElementTabView {
             if let Some(action) = action.as_widget_action() {
                 match action.cast::<RadioButtonAction>() {
                     RadioButtonAction::Clicked => {
-                        for &(index, tab_uid) in &tab_uids {
+                        for &(index, tab_uid, _) in &tabs {
                             if action.widget_uid == tab_uid && index != self.active_index {
                                 self.active_index = index;
+
+                                // Unselect all other tabs
+                                for &(other_index, _, ref other_widget) in &tabs {
+                                    if other_index != index {
+                                        if let Some(mut rb) = other_widget.borrow_mut::<RadioButton>() {
+                                            rb.animator_play(cx, ids!(active.off));
+                                        }
+                                    }
+                                }
+
+                                // Switch page
                                 let content = self.view.widget(ids!(content));
                                 if let Some(mut pf) = content.borrow_mut::<PageFlip>() {
                                     pf.set_active_page(cx, PAGE_IDS[index]);
