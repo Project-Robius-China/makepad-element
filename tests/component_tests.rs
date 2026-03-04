@@ -30,3 +30,25 @@ fn theme_typography_sizes() {
     assert!(ELEMENT_FONT_H4 > ELEMENT_FONT_BODY);
     assert!(ELEMENT_FONT_BODY > ELEMENT_FONT_CAPTION);
 }
+
+#[test]
+fn rne_parity_has_airbnb_rating_component() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
+    let module_file = root.join("src/components/airbnb_rating.rs");
+    assert!(
+        module_file.exists(),
+        "missing component module: {:?}",
+        module_file
+    );
+
+    let mod_rs = std::fs::read_to_string(root.join("src/components/mod.rs"))
+        .expect("failed to read src/components/mod.rs");
+    assert!(
+        mod_rs.contains("pub mod airbnb_rating;"),
+        "components/mod.rs missing module export for airbnb_rating"
+    );
+    assert!(
+        mod_rs.contains("self::airbnb_rating::live_design(cx);"),
+        "components/mod.rs missing live_design registration for airbnb_rating"
+    );
+}

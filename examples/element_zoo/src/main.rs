@@ -3,11 +3,11 @@
 //! FileTree-based gallery with component tree on the left,
 //! detail pages on the right.
 
-use makepad_widgets::*;
-use makepad_widgets::file_tree::*;
-use std::collections::HashMap;
 use makepad_element::components::rating::ElementRatingWidgetRefExt;
-use makepad_element::{ThemeMode, apply_theme};
+use makepad_element::{apply_theme, ThemeMode};
+use makepad_widgets::file_tree::*;
+use makepad_widgets::*;
+use std::collections::HashMap;
 
 live_design! {
     use link::theme::*;
@@ -34,6 +34,7 @@ live_design! {
     use makepad_element::components::search_bar::*;
     use makepad_element::components::linear_progress::*;
     use makepad_element::components::rating::*;
+    use makepad_element::components::airbnb_rating::*;
     use makepad_element::components::fab::*;
     use makepad_element::components::tooltip::*;
     use makepad_element::components::overlay::*;
@@ -863,6 +864,13 @@ live_design! {
                             empty_color: #ffcdd2,
                         }
 
+                        // Airbnb-style Rating
+                        <Label> { width: Fit, height: Fit, margin: {top: 16},
+                            draw_text: { color: #666666, text_style: { font_size: 16.0 } } text: "AirbnbRating style:" }
+                        <ElementAirbnbRating> {
+                            default_rating: 4,
+                        }
+
                         // Static variants (legacy)
                         <Label> { width: Fit, height: Fit, margin: {top: 24},
                             draw_text: { color: #666666, text_style: { font_size: 16.0 } } text: "Static variants:" }
@@ -1340,7 +1348,8 @@ struct TreeEdge {
 // StaggeredGridDemo: populates an ElementStaggeredGrid with colored boxes
 #[derive(Live, LiveHook, Widget)]
 pub struct StaggeredGridDemo {
-    #[deref] view: View,
+    #[deref]
+    view: View,
 }
 
 use makepad_element::components::staggered_grid::ElementStaggeredGrid;
@@ -1361,17 +1370,26 @@ impl Widget for StaggeredGridDemo {
                     vec4(0.612, 0.153, 0.690, 1.0),
                     vec4(0.000, 0.588, 0.533, 1.0),
                 ];
-                let heights: [f64; 12] = [60.0, 90.0, 45.0, 110.0, 70.0, 85.0, 50.0, 100.0, 65.0, 80.0, 55.0, 95.0];
+                let heights: [f64; 12] = [
+                    60.0, 90.0, 45.0, 110.0, 70.0, 85.0, 50.0, 100.0, 65.0, 80.0, 55.0, 95.0,
+                ];
 
                 grid_ref.set_item_range(cx, 0, 12);
                 while let Some(index) = grid_ref.next_visible_item(cx) {
-                    if let Some((item_widget, _status)) = grid_ref.item(cx, index, live_id!(GridItem)) {
+                    if let Some((item_widget, _status)) =
+                        grid_ref.item(cx, index, live_id!(GridItem))
+                    {
                         let color = colors[index % colors.len()];
-                        item_widget.apply_over(cx, live! {
-                            height: (heights[index % heights.len()]),
-                            draw_bg: { color: (color) }
-                        });
-                        item_widget.label(ids!(item_label)).set_text(cx, &format!("Item {}", index));
+                        item_widget.apply_over(
+                            cx,
+                            live! {
+                                height: (heights[index % heights.len()]),
+                                draw_bg: { color: (color) }
+                            },
+                        );
+                        item_widget
+                            .label(ids!(item_label))
+                            .set_text(cx, &format!("Item {}", index));
                         item_widget.draw_all(cx, scope);
                     }
                 }
@@ -1384,14 +1402,20 @@ impl Widget for StaggeredGridDemo {
 // ComponentTree: wraps FileTree with pre-populated component hierarchy
 #[derive(Live, LiveHook, Widget)]
 pub struct ComponentTree {
-    #[wrap] #[live] file_tree: FileTree,
-    #[rust] file_nodes: LiveIdMap<LiveId, TreeNode>,
-    #[rust] built: bool,
+    #[wrap]
+    #[live]
+    file_tree: FileTree,
+    #[rust]
+    file_nodes: LiveIdMap<LiveId, TreeNode>,
+    #[rust]
+    built: bool,
 }
 
 impl ComponentTree {
     fn ensure_built(&mut self) {
-        if self.built { return; }
+        if self.built {
+            return;
+        }
         self.built = true;
 
         let mut nodes = LiveIdMap::default();
@@ -1401,12 +1425,26 @@ impl ComponentTree {
             ("Markdown", &["Rich Text", "Code Block"]),
             ("Divider", &["Horizontal", "Inset", "Vertical"]),
             ("Icon", &["Small", "Medium", "Large", "Primary"]),
-            ("Button", &["Solid", "Secondary", "Warning", "Outline", "Clear", "Error", "Success"]),
+            (
+                "Button",
+                &[
+                    "Solid",
+                    "Secondary",
+                    "Warning",
+                    "Outline",
+                    "Clear",
+                    "Error",
+                    "Success",
+                ],
+            ),
             ("Image", &["Standard", "Rounded", "Circle"]),
             ("Switch", &["Default", "Selected", "Labeled"]),
             ("CheckBox", &["Unchecked", "Checked", "Disabled", "Flat"]),
             ("Slider", &["Default", "Round", "Minimal", "Stepped"]),
-            ("Input", &["Standard", "Flat", "Labeled", "Error", "Password"]),
+            (
+                "Input",
+                &["Standard", "Flat", "Labeled", "Error", "Password"],
+            ),
             ("Card", &["Basic", "Titled", "Actions"]),
             ("Avatar", &["Small", "Medium", "Large", "Colors"]),
             ("Badge", &["Count", "Primary", "Success", "Dot"]),
@@ -1416,7 +1454,12 @@ impl ComponentTree {
             ("Tab", &["TabBar", "TabView"]),
             ("SearchBar", &["Default", "Custom"]),
             ("LinearProgress", &["25%", "50%", "75%", "100%", "Error"]),
-            ("Rating", &["0 Stars", "1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars"]),
+            (
+                "Rating",
+                &[
+                    "Airbnb", "0 Stars", "1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars",
+                ],
+            ),
             ("FAB", &["Small", "Default", "Extended", "Colors"]),
             ("Tooltip", &["Default", "Primary"]),
             ("Overlay", &["Backdrop"]),
@@ -1438,7 +1481,10 @@ impl ComponentTree {
             ("Tier 1: Basic", &[0, 1, 2, 3, 4, 5]),
             ("Tier 2: Form", &[6, 7, 8, 9, 10]),
             ("Tier 3: Composite", &[11, 12, 13, 14, 15, 16, 17, 18, 19]),
-            ("Tier 4: Advanced", &[20, 21, 22, 23, 24, 25, 26, 27, 28, 29]),
+            (
+                "Tier 4: Advanced",
+                &[20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+            ),
             ("Tier 5: Wonderous", &[30, 31, 32, 33]),
         ];
 
@@ -1459,16 +1505,22 @@ impl ComponentTree {
                         name: child_name.to_string(),
                         id: child_id,
                     });
-                    nodes.insert(child_id, TreeNode {
-                        name: child_name.to_string(),
-                        children: None,
-                    });
+                    nodes.insert(
+                        child_id,
+                        TreeNode {
+                            name: child_name.to_string(),
+                            children: None,
+                        },
+                    );
                 }
 
-                nodes.insert(comp_id, TreeNode {
-                    name: comp_name.to_string(),
-                    children: Some(child_edges),
-                });
+                nodes.insert(
+                    comp_id,
+                    TreeNode {
+                        name: comp_name.to_string(),
+                        children: Some(child_edges),
+                    },
+                );
 
                 tier_edges.push(TreeEdge {
                     name: comp_name.to_string(),
@@ -1476,10 +1528,13 @@ impl ComponentTree {
                 });
             }
 
-            nodes.insert(tier_id, TreeNode {
-                name: tier_name.to_string(),
-                children: Some(tier_edges),
-            });
+            nodes.insert(
+                tier_id,
+                TreeNode {
+                    name: tier_name.to_string(),
+                    children: Some(tier_edges),
+                },
+            );
 
             root_edges.push(TreeEdge {
                 name: tier_name.to_string(),
@@ -1487,15 +1542,23 @@ impl ComponentTree {
             });
         }
 
-        nodes.insert(live_id!(root), TreeNode {
-            name: "Components".to_string(),
-            children: Some(root_edges),
-        });
+        nodes.insert(
+            live_id!(root),
+            TreeNode {
+                name: "Components".to_string(),
+                children: Some(root_edges),
+            },
+        );
 
         self.file_nodes = nodes;
     }
 
-    fn draw_node(cx: &mut Cx2d, node_id: LiveId, ft: &mut FileTree, nodes: &LiveIdMap<LiveId, TreeNode>) {
+    fn draw_node(
+        cx: &mut Cx2d,
+        node_id: LiveId,
+        ft: &mut FileTree,
+        nodes: &LiveIdMap<LiveId, TreeNode>,
+    ) {
         if let Some(node) = nodes.get(&node_id) {
             match &node.children {
                 Some(children) => {
@@ -1523,9 +1586,15 @@ impl Widget for ComponentTree {
         self.ensure_built();
         while self.file_tree.draw_walk(cx, scope, walk).is_step() {
             // Open tier folders by default
-            for tier_name in &["Tier 1: Basic", "Tier 2: Form", "Tier 3: Composite", "Tier 4: Advanced"] {
+            for tier_name in &[
+                "Tier 1: Basic",
+                "Tier 2: Form",
+                "Tier 3: Composite",
+                "Tier 4: Advanced",
+            ] {
                 let tier_id = LiveId::from_str(tier_name);
-                self.file_tree.set_folder_is_open(cx, tier_id, true, Animate::No);
+                self.file_tree
+                    .set_folder_is_open(cx, tier_id, true, Animate::No);
             }
 
             // Draw nodes
@@ -1600,15 +1669,27 @@ impl MatchEvent for App {
         // Handle theme toggle switch
         if let Some(on) = self.ui.check_box(ids!(theme_toggle)).changed(&actions) {
             self.is_dark = on;
-            let mode = if on { ThemeMode::Dark } else { ThemeMode::Light };
+            let mode = if on {
+                ThemeMode::Dark
+            } else {
+                ThemeMode::Light
+            };
             apply_theme(cx, mode);
             self.sync_theme_ui(cx);
         }
 
         // Handle interactive rating changes
-        if let Some(value) = self.ui.element_rating(ids!(interactive_rating)).changed(&actions) {
+        if let Some(value) = self
+            .ui
+            .element_rating(ids!(interactive_rating))
+            .changed(&actions)
+        {
             let text = if (value - value.round()).abs() < 0.01 {
-                format!("{:.0} star{}", value, if value as i32 == 1 { "" } else { "s" })
+                format!(
+                    "{:.0} star{}",
+                    value,
+                    if value as i32 == 1 { "" } else { "s" }
+                )
             } else {
                 format!("{:.1} stars", value)
             };
@@ -1661,12 +1742,26 @@ impl App {
             ("Markdown", &["Rich Text", "Code Block"]),
             ("Divider", &["Horizontal", "Inset", "Vertical"]),
             ("Icon", &["Small", "Medium", "Large", "Primary"]),
-            ("Button", &["Solid", "Secondary", "Warning", "Outline", "Clear", "Error", "Success"]),
+            (
+                "Button",
+                &[
+                    "Solid",
+                    "Secondary",
+                    "Warning",
+                    "Outline",
+                    "Clear",
+                    "Error",
+                    "Success",
+                ],
+            ),
             ("Image", &["Standard", "Rounded", "Circle"]),
             ("Switch", &["Default", "Selected", "Labeled"]),
             ("CheckBox", &["Unchecked", "Checked", "Disabled", "Flat"]),
             ("Slider", &["Default", "Round", "Minimal", "Stepped"]),
-            ("Input", &["Standard", "Flat", "Labeled", "Error", "Password"]),
+            (
+                "Input",
+                &["Standard", "Flat", "Labeled", "Error", "Password"],
+            ),
             ("Card", &["Basic", "Titled", "Actions"]),
             ("Avatar", &["Small", "Medium", "Large", "Colors"]),
             ("Badge", &["Count", "Primary", "Success", "Dot"]),
@@ -1676,7 +1771,12 @@ impl App {
             ("Tab", &["TabBar", "TabView"]),
             ("SearchBar", &["Default", "Custom"]),
             ("LinearProgress", &["25%", "50%", "75%", "100%", "Error"]),
-            ("Rating", &["0 Stars", "1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars"]),
+            (
+                "Rating",
+                &[
+                    "Airbnb", "0 Stars", "1 Star", "2 Stars", "3 Stars", "4 Stars", "5 Stars",
+                ],
+            ),
             ("FAB", &["Small", "Default", "Extended", "Colors"]),
             ("Tooltip", &["Default", "Primary"]),
             ("Overlay", &["Backdrop"]),
@@ -1712,19 +1812,44 @@ impl App {
 
     fn all_detail_page_ids() -> Vec<LiveId> {
         [
-            "text_detail_page", "divider_detail_page", "icon_detail_page",
-            "button_detail_page", "image_detail_page", "switch_detail_page",
-            "check_box_detail_page", "slider_detail_page", "input_detail_page",
-            "card_detail_page", "avatar_detail_page", "badge_detail_page",
-            "chip_detail_page", "header_detail_page", "list_item_detail_page",
-            "tab_detail_page", "search_bar_detail_page", "linear_progress_detail_page",
-            "rating_detail_page", "fab_detail_page", "tooltip_detail_page",
-            "overlay_detail_page", "dialog_detail_page", "tile_detail_page",
-            "pricing_card_detail_page", "skeleton_detail_page", "speed_dial_detail_page",
-            "social_icon_detail_page", "markdown_detail_page", "svg_detail_page",
-            "fade_view_detail_page", "blur_view_detail_page", "fading_bar_detail_page",
+            "text_detail_page",
+            "divider_detail_page",
+            "icon_detail_page",
+            "button_detail_page",
+            "image_detail_page",
+            "switch_detail_page",
+            "check_box_detail_page",
+            "slider_detail_page",
+            "input_detail_page",
+            "card_detail_page",
+            "avatar_detail_page",
+            "badge_detail_page",
+            "chip_detail_page",
+            "header_detail_page",
+            "list_item_detail_page",
+            "tab_detail_page",
+            "search_bar_detail_page",
+            "linear_progress_detail_page",
+            "rating_detail_page",
+            "fab_detail_page",
+            "tooltip_detail_page",
+            "overlay_detail_page",
+            "dialog_detail_page",
+            "tile_detail_page",
+            "pricing_card_detail_page",
+            "skeleton_detail_page",
+            "speed_dial_detail_page",
+            "social_icon_detail_page",
+            "markdown_detail_page",
+            "svg_detail_page",
+            "fade_view_detail_page",
+            "blur_view_detail_page",
+            "fading_bar_detail_page",
             "staggered_grid_detail_page",
-        ].iter().map(|s| LiveId::from_str(s)).collect()
+        ]
+        .iter()
+        .map(|s| LiveId::from_str(s))
+        .collect()
     }
 
     fn show_page_for_node(&mut self, cx: &mut Cx, node_id: LiveId) {
@@ -1741,7 +1866,9 @@ impl App {
     }
 
     fn sync_theme_ui(&mut self, cx: &mut Cx) {
-        self.ui.check_box(ids!(theme_toggle)).set_active(cx, self.is_dark);
+        self.ui
+            .check_box(ids!(theme_toggle))
+            .set_active(cx, self.is_dark);
         self.ui
             .label(ids!(theme_label))
             .set_text(cx, if self.is_dark { "Dark" } else { "Light" });
